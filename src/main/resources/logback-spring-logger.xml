@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE logback>
+<included>
+	<root level="INFO">
+		<appender-ref ref="CONSOLE_APPENDER" />
+	</root>
+
+
+	<logger name="org.springframework.web" level="ERROR" />
+
+
+
+
+	<!-- application main -->
+	<logger name="com.pharma.itsmypharma" level="INFO"
+		additivity="false">
+		<appender-ref ref="APP_APPENDER" />
+		<appender-ref ref="ERR_APPENDER" />
+	</logger>
+
+
+
+
+</included>

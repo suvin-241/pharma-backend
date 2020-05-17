@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE logback>
+<configuration>
+
+	<!-- application.properties -->
+	<springProperty scope="context" name="PROFILE"
+		source="itsmypharma.log.directoryname" />
+	<!-- <property name="LOG_DIR" value="/Users/suvins/logs/${PROFILE}" /> -->
+	<property name="LOG_DIR" value="/home/ubuntu/mypharma/logs/${PROFILE}" />
+	
+
+
+
+	<appender name="CONSOLE_APPENDER"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<target>System.out</target>
+		<encoder>
+			<pattern>[%d{yyyy/MM/dd HH:mm:ss.SSS}] [%-5p] [%X{logUserId}] [%c{0}]
+				- %m%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>DEBUG</level>
+		</filter>
+	</appender>
+
+	<appender name="APP_APPENDER"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_DIR}/app.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_DIR}/app_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>[%d{yyyy/MM/dd HH:mm:ss.SSS}] [%-5p] [%X{logUserId}] [%c{0}]
+				- %m%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+			<level>DEBUG</level>
+		</filter>
+	</appender>
+
+
+	<appender name="ERR_APPENDER"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_DIR}/err.log</file>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOG_DIR}/err_%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d{yyyy/MM/dd HH:mm:ss.SSS} [%-5p] [%X{logUserId}] [%c{0}] -
+				%m%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+	</appender>
+
+
+	<include resource="logback-spring-logger.xml" />
+</configuration>
