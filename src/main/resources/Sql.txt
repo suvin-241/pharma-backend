@@ -1,0 +1,15 @@
+
+CREATE TABLE mypharma.pharma_user_mast (
+    pum_user_id int not null auto_increment,
+    pum_user_name varchar(50) not null,
+    pum_user_pass varchar(50) not null,
+    pum_user_email varchar(50) not null,
+    pcm_ins_date date,
+    pcm_lupd_date date,
+    pcm_done_flag char default 'N',
+    pcm_reg_done char default 'N',
+    primary key(pum_user_id)
+   
+);
+ALTER TABLE mypharma.pharma_user_mast AUTO_INCREMENT=1000;
+ALTER TABLE pharma_user_mast ADD pum_mobile_no varchar(10) not null;

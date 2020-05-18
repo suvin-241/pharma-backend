@@ -9,19 +9,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pharma.itsmypharma.service.CustomerService;
+import com.pharma.itsmypharma.common.PharmaException;
+import com.pharma.itsmypharma.model.UserVo;
+import com.pharma.itsmypharma.service.UserService;
 import com.pharma.itsmypharma.util.PharmaConstants;
 
 
 @RestController
-public class CustomerController {
+public class UserController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
-	private CustomerService customerService;
+	private UserService userService;
 	
 
 	@GetMapping(value = "/api/test")
@@ -33,12 +37,22 @@ public class CustomerController {
 		return new ResponseEntity<>(responsemap, HttpStatus.OK);
 	}
 
-	@GetMapping(value = "/api/testConnection")
-	public ResponseEntity<Map<String, Object>> testConnection() {
+	@PostMapping(value="/api/addUser")
+	public ResponseEntity<Map<String, Object>> createUser(@RequestBody UserVo uservo) throws PharmaException{
 		Map<String, Object> responsemap = new HashMap<>();
-		responsemap.put(PharmaConstants.DATA, customerService.createCustomer(null));
+		responsemap.put(PharmaConstants.DATA, userService.createUser(uservo));
 		responsemap.put(PharmaConstants.SUCCESS, true);
 		responsemap.put(PharmaConstants.MESSAGE, "");
 		return new ResponseEntity<>(responsemap, HttpStatus.OK);
 	}
+	
+	@PostMapping(value="/api/auth")
+	public ResponseEntity<Map<String, Object>> authUser(@RequestBody UserVo uservo) throws PharmaException{
+		Map<String, Object> responsemap = new HashMap<>();
+		responsemap.put(PharmaConstants.DATA, userService.authUser(uservo));
+		responsemap.put(PharmaConstants.SUCCESS, true);
+		responsemap.put(PharmaConstants.MESSAGE, "");
+		return new ResponseEntity<>(responsemap, HttpStatus.OK);
+	}
+
 }
