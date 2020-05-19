@@ -36,6 +36,7 @@ public class UserVo {
 		this.doneFlag=user.getDoneFlag();
 		this.regDoneFlag=user.getRegDoneFlag();
 		this.mobileNo=user.getMobileNo();
+		this.userEmail=user.getUserEmail();
 	}
 
 	public BigInteger getUserId() {
