@@ -39,7 +39,7 @@ public class UserController {
 		return new ResponseEntity<>(responsemap, HttpStatus.OK);
 	}
 
-	@PostMapping(value="/api/addUser")
+	@PostMapping(value="/api/registerInst")
 	public ResponseEntity<Map<String, Object>> createUser(@RequestBody UserVo uservo) throws PharmaException{
 		Map<String, Object> responsemap = new HashMap<>();
 		responsemap.put(PharmaConstants.DATA, userService.createUser(uservo));

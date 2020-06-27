@@ -23,20 +23,20 @@ public class UserVo {
 
 	private Date lupdDate;
 
-	private Character doneFlag;
-
-	private Character regDoneFlag;
-	
 	private String mobileNo;
+	
+	private Character isAdmin;
+	
+	private Integer instId;
 
 	public UserVo(User user) {
 
 		this.userId = user.getUserId();
 		this.userName = user.getUserName();
-		this.doneFlag=user.getDoneFlag();
-		this.regDoneFlag=user.getRegDoneFlag();
-		this.mobileNo=user.getMobileNo();
-		this.userEmail=user.getUserEmail();
+		this.mobileNo = user.getMobileNo();
+		this.userEmail = user.getUserEmail();
+		this.isAdmin=user.getIsAdmin();
+		
 	}
 
 	public BigInteger getUserId() {
@@ -87,22 +87,6 @@ public class UserVo {
 		this.lupdDate = lupdDate;
 	}
 
-	public Character getDoneFlag() {
-		return doneFlag;
-	}
-
-	public void setDoneFlag(Character doneFlag) {
-		this.doneFlag = doneFlag;
-	}
-
-	public Character getRegDoneFlag() {
-		return regDoneFlag;
-	}
-
-	public void setRegDoneFlag(Character regDoneFlag) {
-		this.regDoneFlag = regDoneFlag;
-	}
-
 	public String getMobileNo() {
 		return mobileNo;
 	}
@@ -110,5 +94,21 @@ public class UserVo {
 	public void setMobileNo(String mobileNo) {
 		this.mobileNo = mobileNo;
 	}
-	
+
+	public Character getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(Character isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+	public Integer getInstId() {
+		return instId;
+	}
+
+	public void setInstId(Integer instId) {
+		this.instId = instId;
+	}
+
 }
