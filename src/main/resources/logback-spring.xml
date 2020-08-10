@@ -7,7 +7,7 @@
 		source="itsmypharma.log.directoryname" />
 	<!--  <property name="LOG_DIR" value="/Users/suvins/logs/${PROFILE}" /> -->
 	  <property name="LOG_DIR"
-		value="/root/itsmypharma/logs/${PROFILE}" />
+		value="/home/itsmypharma/logs/${PROFILE}" />
 
 
 
