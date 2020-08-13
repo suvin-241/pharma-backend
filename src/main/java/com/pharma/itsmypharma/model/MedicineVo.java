@@ -33,12 +33,12 @@ public class MedicineVo {
 		this.mediId=master.getMediId();
 		this.medicineName=master.getDrugName();
 		this.description=master.getComposition();
-		this.mrp=master.getMrp();
-		this.price=master.getPrice();
+		//this.mrp=master.getMrp();
+		//this.price=master.getPrice();
 		this.company=master.getManuFact();
 		this.companyAddress=master.getManuFactAddr();
-		this.alterBrand=master.getAlterBrand();
-		this.relatedProduct=master.getRelatedProduct();
+		//this.alterBrand=master.getAlterBrand();
+		//this.relatedProduct=master.getRelatedProduct();
 		this.image=null;
 	}
 
