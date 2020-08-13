@@ -45,7 +45,7 @@ public class Customer implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date insDate;
 	
-	@Column(name = "pcm_mobile_no")
+	@Column(name = "pcm_lupd_date")
 	@Temporal(TemporalType.DATE)
 	private Date lupdDate;
 	

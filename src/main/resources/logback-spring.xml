@@ -5,9 +5,9 @@
 	<!-- application.properties -->
 	<springProperty scope="context" name="PROFILE"
 		source="itsmypharma.log.directoryname" />
-	<!--  <property name="LOG_DIR" value="/Users/suvins/logs/${PROFILE}" /> -->
-	  <property name="LOG_DIR"
-		value="/home/itsmypharma/logs/${PROFILE}" />
+	 <property name="LOG_DIR" value="/Users/suvins/logs/${PROFILE}" />
+	<!--   <property name="LOG_DIR"
+		value="/home/itsmypharma/logs/${PROFILE}" /> -->
 
 
 
