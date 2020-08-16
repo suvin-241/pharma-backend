@@ -53,11 +53,15 @@ public class LoadMedicine {
 
 	public static void main(String a[]) throws SQLException, IOException {
 
-		final String DB_URL = "jdbc:mysql://database-1.cvupt0lnxqwj.us-east-2.rds.amazonaws.com:3306/mypharma?useSSL=false&useUnicode=yes&characterEncoding=UTF-8";
+		//final String DB_URL = "jdbc:mysql://database-1.cvupt0lnxqwj.us-east-2.rds.amazonaws.com:3306/mypharma?useSSL=false&useUnicode=yes&characterEncoding=UTF-8";
+		
+		final String DB_URL = "jdbc:mysql://164.52.200.170:3306/itsmypharma?useSSL=false&useUnicode=yes&characterEncoding=UTF-8";
 
 		// Database credentials
-		final String USER = "admin";
-		final String PASS = "itsmypharma012";
+		//final String USER = "admin";
+		//final String PASS = "itsmypharma012";
+		final String USER = "pharma";
+		final String PASS = "HGUT^%@gyfd7";
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		PreparedStatement stmt2=null;
@@ -77,8 +81,8 @@ public class LoadMedicine {
 			//File folder = new File("/Users/suvins/MyPharma/Pharmacy databse/MedicineData_A.xlsx");
 			//File photoFolder=new File("/Users/suvins/MyPharma/Pharmacy Images/drugImages_A/drugs/");
 			// File[] listOfFiles = folder.listFiles();
-			AtomicLong rownum = new AtomicLong(1);
-			AtomicLong imageRownum=new AtomicLong(1);
+			AtomicLong rownum = new AtomicLong(18284);
+			AtomicLong imageRownum=new AtomicLong(4089);
 			// for (File f : listOfFiles) {s
 			
 			for(Map.Entry<String, String> s:folderMap.entrySet())
@@ -112,8 +116,8 @@ public class LoadMedicine {
 					+ "pmm_safety_advice,"
 					+ " pmm_alter_brand,"
 					+ " pmm_related_product,"
-					+ " pmm_manufact_addr) "
-					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+					+ " pmm_manufact_addr,pmm_image_path ,pmm_image_avail ) "
+					+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			stmt2=conn.prepareStatement("insert into pharma_medi_info(pmi_med_id,"
 					+ " pmi_into_desc, "
 					+ "pmi_side_effects,"
@@ -142,13 +146,14 @@ public class LoadMedicine {
 				
 				if (i == 0) {
 					i++;
+					System.out.println("continue");
 					continue;
 				}
 				
 				
 				if (flag)
 					break;
-//				i++;
+//			i++;
 //				if (i ==112) {
 //					break;
 //				}
@@ -175,6 +180,7 @@ public class LoadMedicine {
 						if(flag)
 							break;
 						stmt.setString(2,currentCell==null? null: currentCell.getStringCellValue());
+						System.out.println("Medicine name"+currentCell==null? null: currentCell.getStringCellValue());//Azinet 200 Oral Suspension
 						j++;
 						break;
 					case 2:
@@ -186,6 +192,10 @@ public class LoadMedicine {
 						j++;
 						break;
 					case 4:
+						if(currentCell!=null)
+						{
+							System.out.println(currentCell.getCellType());
+						}
 						stmt.setString(5, getAmount(currentCell==null? null:currentCell.getStringCellValue()));
 						j++;
 						break;
@@ -308,7 +318,7 @@ public class LoadMedicine {
 					}
 					
 				}
-				stmt.addBatch();
+				
 				//System.out.println("Master");
 				stmt2.addBatch();
 				stmt4.addBatch();
@@ -316,7 +326,13 @@ public class LoadMedicine {
 				File fileList[]=photoFolder.listFiles();
 				String pathname=cellpathanme;
 			
-				String filename= pathname!=null? pathname.substring(pathname.lastIndexOf("/")+1,pathname.length()):null;
+				String filename= pathname!=null? pathname.substring(pathname.lastIndexOf("\\")+1,pathname.length()):null;
+				/*
+				 * For B folder alone last Index would be \\, otherwise /
+				 */
+				System.out.println("filename"+filename);
+				stmt.setString(15, filename);
+				boolean imageAvailable=false;
 				for(File f: fileList) {
 					
 					//System.out.println(filename);
@@ -326,6 +342,7 @@ public class LoadMedicine {
 					if(f.isDirectory() && filename.equalsIgnoreCase(f.getName())) {
 						for(File image:f.listFiles())
 						{
+							imageAvailable=true;
 							FileInputStream fis=new FileInputStream(image);
 							stmt3.setString(1, PadLeft(String.valueOf(imageRownum.getAndIncrement()), 10));
 							stmt3.setString(2, primarykey);
@@ -336,8 +353,11 @@ public class LoadMedicine {
 						
 					}
 				}
+				stmt.setString(16, imageAvailable? "Y":"N");
+				stmt.addBatch();
+				
 				System.out.println(Integer.parseInt(rownum.toString())-1 + "records added");
-				if(Integer.parseInt(rownum.toString())%1000==0) {
+				if(Integer.parseInt(rownum.toString())%100==0) {
 					System.out.println("Started.........................");
 					stmt.executeLargeBatch();
 					System.out.println("statement 1 executed");
@@ -370,8 +390,8 @@ public class LoadMedicine {
 							+ "pmm_safety_advice,"
 							+ " pmm_alter_brand,"
 							+ " pmm_related_product,"
-							+ " pmm_manufact_addr) "
-							+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+							+ " pmm_manufact_addr,pmm_image_path ,pmm_image_avail ) "
+							+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 					stmt2=conn.prepareStatement("insert into pharma_medi_info(pmi_med_id,"
 							+ " pmi_into_desc, "
 							+ "pmi_side_effects,"
@@ -448,66 +468,70 @@ public class LoadMedicine {
 	public static final Map<String,String> folderMap=new HashMap() {
 		
 		{
-			put("A","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_A.xlsx");
+			//put("A","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_A.xlsx");
+			
 			put("B","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_B.xlsx");
-			put("C","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_C.xlsx");
-			put("D","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_D.xlsx");
-			put("E","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_E.xlsx");
-			put("F","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_F.xlsx");
-			put("G","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_G.xlsx");
-			put("H","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_H.xlsx");
-			put("I","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_I.xlsx");
-			put("J","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_J.xlsx");
-			put("K","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_K.xlsx");
-			put("L","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_L.xlsx");
-			put("M","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_M.xlsx");
-			put("N","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_N.xlsx");
-			put("O","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_O.xlsx");
-			put("P","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_P.xlsx");
-			put("Q","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_Q.xlsx");
-			put("R","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_R.xlsx");
-			put("S","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_S.xlsx");
-			put("T","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_T.xlsx");
-			put("U","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_U.xlsx");
-			put("V","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_V.xlsx");
-			put("W","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_W.xlsx");
-			put("X","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_X.xlsx");
-			put("Y","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_Y.xlsx");
-			put("Z","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_Z.xlsx");
-			put("NoAlpha","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_NoAlpha.xlsx");
+			 // put("C","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_C.xlsx");
+			 // put("D","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_D.xlsx");
+			// put("E","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_E.xlsx");
+			//  put("F","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_F.xlsx");
+			 // put("G","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_G.xlsx");
+			//  put("H","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_H.xlsx");
+			//  put("I","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_I.xlsx");
+			//  put("J","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_J.xlsx");
+			//  put("K","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_K.xlsx");
+			//  put("L","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_L.xlsx");
+			// put("M","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_M.xlsx");
+			//  put("N","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_N.xlsx");
+			//  put("O","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_O.xlsx");
+			//  put("P","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_P.xlsx");
+			//  put("Q","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_Q.xlsx");
+			//  put("R","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_R.xlsx");
+			//  put("S","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_S.xlsx");
+			//  put("T","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_T.xlsx");
+			//  put("U","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_U.xlsx");
+			//  put("V","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_V.xlsx");
+			 // put("W","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_W.xlsx");
+			 // put("X","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_X.xlsx");
+			//  put("Y","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_Y.xlsx");
+			// put("Z","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_Z.xlsx"); 
+			// put("NoAlpha","/Users/suvins/MyPharma/Pharmacy databse/MedicineData_NoAlpha.xlsx");
+			 
 		}
 		
 	};
 	
 	public static final Map<String,String> photoMap=new HashMap() {
 		{
-			put("A","/Users/suvins/MyPharma/Pharmacy Images/drugImage_A/drugs/");
-			put("B","/Users/suvins/MyPharma/Pharmacy Images/drugImage_B/drugs/");
-			put("C","/Users/suvins/MyPharma/Pharmacy Images/drugImage_C/drugs/");
-			put("D","/Users/suvins/MyPharma/Pharmacy Images/drugImage_D/drugs/");
-			put("E","/Users/suvins/MyPharma/Pharmacy Images/drugImage_E/drugs/");
-			put("F","/Users/suvins/MyPharma/Pharmacy Images/drugImage_F/drugs/");
-			put("G","/Users/suvins/MyPharma/Pharmacy Images/drugImage_G/drugs/");
-			put("H","/Users/suvins/MyPharma/Pharmacy Images/drugImage_H/drugs/");
-			put("I","/Users/suvins/MyPharma/Pharmacy Images/drugImage_I/drugs/");
-			put("J","/Users/suvins/MyPharma/Pharmacy Images/drugImage_J/drugs/");
-			put("K","/Users/suvins/MyPharma/Pharmacy Images/drugImage_K/drugs/");
-			put("L","/Users/suvins/MyPharma/Pharmacy Images/drugImage_L/drugs/");
-			put("M","/Users/suvins/MyPharma/Pharmacy Images/drugImage_M/drugs/");
-			put("N","/Users/suvins/MyPharma/Pharmacy Images/drugImage_N/drugs/");
-			put("O","/Users/suvins/MyPharma/Pharmacy Images/drugImage_O/drugs/");
-			put("P","/Users/suvins/MyPharma/Pharmacy Images/drugImage_P/drugs/");
-			put("Q","/Users/suvins/MyPharma/Pharmacy Images/drugImage_Q/drugs/");
-			put("R","/Users/suvins/MyPharma/Pharmacy Images/drugImage_R/drugs/");
-			put("S","/Users/suvins/MyPharma/Pharmacy Images/drugImage_S/drugs/");
-			put("T","/Users/suvins/MyPharma/Pharmacy Images/drugImage_T/drugs/");
-			put("U","/Users/suvins/MyPharma/Pharmacy Images/drugImage_U/drugs/");
-			put("V","/Users/suvins/MyPharma/Pharmacy Images/drugImage_V/drugs/");
-			put("W","/Users/suvins/MyPharma/Pharmacy Images/drugImage_W/drugs/");
-			put("X","/Users/suvins/MyPharma/Pharmacy Images/drugImage_X/drugs/");
-			put("Y","/Users/suvins/MyPharma/Pharmacy Images/drugImage_Y/drugs/");
-			put("Z","/Users/suvins/MyPharma/Pharmacy Images/drugImage_Z/drugs/");
-			put("NoAlpha","/Users/suvins/MyPharma/Pharmacy Images/drugImage_NoAlpha/drugs/");
+			//put("A","/Users/suvins/MyPharma/Pharmacy Images/drugImage_A/drugs/");
+			
+			 put("B","/Users/suvins/MyPharma/Pharmacy Images/drugImage_B/drugs/");
+			  //put("C","/Users/suvins/MyPharma/Pharmacy Images/drugImage_C/drugs/");
+			  //put("D","/Users/suvins/MyPharma/Pharmacy Images/drugImage_D/drugs/");
+			  //put("E","/Users/suvins/MyPharma/Pharmacy Images/drugImage_E/drugs/");
+			  //put("F","/Users/suvins/MyPharma/Pharmacy Images/drugImage_F/drugs/");
+			  //put("G","/Users/suvins/MyPharma/Pharmacy Images/drugImage_G/drugs/");
+			 // put("H","/Users/suvins/MyPharma/Pharmacy Images/drugImage_H/drugs/");
+			  //put("I","/Users/suvins/MyPharma/Pharmacy Images/drugImage_I/drugs/");
+			  //put("J","/Users/suvins/MyPharma/Pharmacy Images/drugImage_J/drugs/");
+			 // put("K","/Users/suvins/MyPharma/Pharmacy Images/drugImage_K/drugs/");
+			 // put("L","/Users/suvins/MyPharma/Pharmacy Images/drugImage_L/drugs/");
+			  //put("M","/Users/suvins/MyPharma/Pharmacy Images/drugImage_M/drugs/");
+			 // put("N","/Users/suvins/MyPharma/Pharmacy Images/drugImage_N/drugs/");
+			  //put("O","/Users/suvins/MyPharma/Pharmacy Images/drugImage_O/drugs/");
+			// put("P","/Users/suvins/MyPharma/Pharmacy Images/drugImage_P/drugs/");
+			 // put("Q","/Users/suvins/MyPharma/Pharmacy Images/drugImage_Q/drugs/");
+			 // put("R","/Users/suvins/MyPharma/Pharmacy Images/drugImage_R/drugs/");
+			 // put("S","/Users/suvins/MyPharma/Pharmacy Images/drugImage_S/drugs/");
+			 //put("T","/Users/suvins/MyPharma/Pharmacy Images/drugImage_T/drugs/");
+			 // put("U","/Users/suvins/MyPharma/Pharmacy Images/drugImage_U/drugs/");
+			 //put("V","/Users/suvins/MyPharma/Pharmacy Images/drugImage_V/drugs/");
+			//  put("W","/Users/suvins/MyPharma/Pharmacy Images/drugImage_W/drugs/");
+			 // put("X","/Users/suvins/MyPharma/Pharmacy Images/drugImage_X/drugs/");
+			// put("Y","/Users/suvins/MyPharma/Pharmacy Images/drugImage_Y/drugs/");
+			 // put("Z","/Users/suvins/MyPharma/Pharmacy Images/drugImage_Z/drugs/"); 
+			 // put("NoAlpha","/Users/suvins/MyPharma/Pharmacy Images/drugImage_NoAlpha/drugs/");
+			 
 			
 		}
 		

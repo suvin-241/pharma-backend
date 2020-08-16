@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,7 @@ import com.pharma.itsmypharma.service.SearchService;
 import com.pharma.itsmypharma.util.PharmaConstants;
 
 @RestController
+@CrossOrigin
 public class SearchController {
 	
 	@Autowired
@@ -30,7 +32,7 @@ public class SearchController {
 		return new ResponseEntity<>(responsemap, HttpStatus.OK);
 	}
 	
-	@GetMapping(value = "/api/seacrhMedicine/{key}")
+	@GetMapping(value = "/api/searchMedicine/{key}")
 	public ResponseEntity<Map<String, Object>> searchMedicine(@PathVariable(name="key") String key) {
 		Map<String, Object> responsemap = new HashMap<>();
 		
